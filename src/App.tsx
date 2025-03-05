@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import AppHeader from './components/app-header';
 import CardList from './components/card-list';
@@ -15,6 +15,13 @@ const cards = [
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true); // Track loading state
+  const navigate = useNavigate(); // Hook to navigate to other routes
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);  // Clear authentication state
+    sessionStorage.removeItem('isAuthenticated');  // Remove from sessionStorage
+    navigate('/login');  // Redirect to login page
+  };
 
   const handleLogin = (status: boolean) => {
     setIsAuthenticated(status); // Update authentication status
@@ -35,8 +42,8 @@ function App() {
   }
 
   return (
-    <Router>
-      <AppHeader />
+    <>
+      <AppHeader handleLogout={handleLogout} isAuthenticated={isAuthenticated} />
       <Routes>
         {/* Public route */}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
@@ -53,7 +60,7 @@ function App() {
           }
         />
       </Routes>
-    </Router>
+      </>
   );
 }
 
