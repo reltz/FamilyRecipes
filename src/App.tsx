@@ -1,7 +1,10 @@
-
-import './App.css'
-import AppHeader from './components/app-header'
-import CardList from './components/card-list'
+import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import AppHeader from './components/app-header';
+import CardList from './components/card-list';
+import Login from './components/login'; // Assuming you have a Login component
+import PrivateRoute from './components/private-route';
 
 const cards = [
   { title: "Shrimp and Chorizo Paella", description: "This impressive paella is a perfect party dish..." },
@@ -9,15 +12,49 @@ const cards = [
   // Add more cards as needed
 ];
 
-
 function App() {
-  return (
-    <>
-      <AppHeader/>
-      <CardList cards={cards}/>
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true); // Track loading state
 
-    </>
-  )
+  const handleLogin = (status: boolean) => {
+    setIsAuthenticated(status); // Update authentication status
+    sessionStorage.setItem('isAuthenticated', String(status)); // Store status in sessionStorage
+  };
+
+  useEffect(() => {
+    // Check the authentication status in sessionStorage on mount
+    const storedAuthStatus = sessionStorage.getItem('isAuthenticated');
+    if (storedAuthStatus === 'true') {
+      setIsAuthenticated(true); // Update state if already authenticated
+    }
+    setLoading(false); // Set loading to false after checking
+  }, []); // Runs once when the component mounts
+
+  if (loading) {
+    return <div>Loading...</div>; // Show a loading screen while checking auth status
+  }
+
+  return (
+    <Router>
+      <AppHeader />
+      <Routes>
+        {/* Public route */}
+        <Route path="/login" element={<Login onLogin={handleLogin} />} />
+
+        {/* Private route */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute
+              isAuthenticated={isAuthenticated}
+              component={CardList}
+              cards={cards}
+            />
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;

@@ -16,7 +16,7 @@ function AppHeader() {
                     <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        News
+                        Receitas da familia
                     </Typography>
                     <Button color="inherit">Login</Button>
                 </Toolbar>
