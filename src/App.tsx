@@ -1,44 +1,45 @@
-import './App.css';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import AppHeader from './components/app-header';
-import CardList from './components/card-list';
-import Login from './components/login'; // Assuming you have a Login component
-import PrivateRoute from './components/private-route';
-
-const cards = [
-  { title: "Shrimp and Chorizo Paella", description: "This impressive paella is a perfect party dish..." },
-  { title: "Spaghetti Bolognese", description: "A classic Italian pasta dish with a rich meat sauce..." },
-  // Add more cards as needed
-];
+import "./App.css";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import AppHeader from "./components/app-header";
+import CardList from "./components/card-list";
+import Login from "./components/login";
+import PrivateRoute from "./components/private-route";
+import { checkAuthStatus, clearLocalToken } from "./services/login-service";
+import { listRecipes } from "./services/api-service";
+import { Recipe } from "./types/recipe";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true); // Track loading state
-  const navigate = useNavigate(); // Hook to navigate to other routes
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(checkAuthStatus());
+  const [loading, setLoading] = useState<boolean>(true);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsAuthenticated(false);  // Clear authentication state
-    sessionStorage.removeItem('isAuthenticated');  // Remove from sessionStorage
-    navigate('/login');  // Redirect to login page
+    setIsAuthenticated(false);
+    clearLocalToken();
+    navigate("/login");
   };
 
   const handleLogin = (status: boolean) => {
-    setIsAuthenticated(status); // Update authentication status
-    sessionStorage.setItem('isAuthenticated', String(status)); // Store status in sessionStorage
+    setIsAuthenticated(status);
+    navigate("/");
   };
 
   useEffect(() => {
-    // Check the authentication status in sessionStorage on mount
-    const storedAuthStatus = sessionStorage.getItem('isAuthenticated');
-    if (storedAuthStatus === 'true') {
-      setIsAuthenticated(true); // Update state if already authenticated
+    const authStatus = checkAuthStatus();
+    setIsAuthenticated(authStatus)
+    if (isAuthenticated) {
+      listRecipes()
+        .then((res) => setRecipes(res))
+        .finally(() => setLoading(false)); // Ensure loading is set to false
+    } else {
+      setLoading(false); // If not authenticated, stop loading
     }
-    setLoading(false); // Set loading to false after checking
-  }, []); // Runs once when the component mounts
+  }, [isAuthenticated]);
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loading screen while checking auth status
+    return <div>Loading...</div>;
   }
 
   return (
@@ -55,13 +56,14 @@ function App() {
             <PrivateRoute
               isAuthenticated={isAuthenticated}
               component={CardList}
-              cards={cards}
+              cards={recipes}
             />
           }
         />
       </Routes>
-      </>
+    </>
   );
 }
+
 
 export default App;

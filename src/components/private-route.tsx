@@ -1,10 +1,11 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
+import { Recipe } from '../types/recipe';
 
 interface PrivateRouteProps {
   isAuthenticated: boolean;
   component: React.ComponentType<any>;
-  cards: { title: string; description: string }[]; // Add the cards prop
+  cards: Recipe[]; // Add the cards prop
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ isAuthenticated, component: Component, cards }) => {
