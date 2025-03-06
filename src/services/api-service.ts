@@ -1,10 +1,10 @@
 import { mockListRecipesAPI, mockSaveRecipeAPI } from "../mocks/apis";
 import { Recipe } from "../types/recipe";
-import { getLocalToken } from "./login-service";
+import { getToken } from "./login-service";
 
 
 export async function listRecipes(): Promise<Recipe[]> {
-    const token = getLocalToken();
+    const {token} = getToken();
     if(!token) {
         console.info("no token present");
         return Promise.reject(Error("no token in the application"));
@@ -17,11 +17,16 @@ export async function listRecipes(): Promise<Recipe[]> {
 
 
 export async function saveRecipe(formData: FormData): Promise<void> {
-    const token = getLocalToken();
-    if(!token) {
+    const {decoded, token} = getToken();
+    if(!token || !decoded) {
         console.info("no token present");
         return Promise.reject(Error("no token in the application"));
     }
+
+    const user = decoded.username;
+    formData.append("author", user);
+
+
 
     // const response = await fetch('/api/your-endpoint', {
     //     method: 'POST',
