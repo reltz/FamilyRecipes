@@ -1,9 +1,15 @@
-import  MenuIcon  from "@mui/icons-material/Menu";
+import MenuIcon from "@mui/icons-material/Menu";
 import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
 
-function AppHeader() {
+
+interface AppHeaderProps {
+    handleLogout: () => void;
+    isAuthenticated: boolean
+}
+
+function AppHeader(props: AppHeaderProps) {
     return (
-        <Box sx={{ flexGrow: 1, width: "100%"  }}>
+        <Box sx={{ flexGrow: 1, width: "100%" }}>
             <AppBar position="static" sx={{ width: "100%" }}>
                 <Toolbar>
                     <IconButton
@@ -13,12 +19,15 @@ function AppHeader() {
                         aria-label="menu"
                         sx={{ mr: 2 }}
                     >
-                    <MenuIcon />
+                        <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        News
+                        Receitas da familia
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    {props.isAuthenticated && (
+                        <Button color="inherit" onClick={props.handleLogout}>Logout</Button>
+                    )}
+
                 </Toolbar>
             </AppBar>
         </Box>
