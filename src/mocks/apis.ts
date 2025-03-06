@@ -115,3 +115,12 @@ export async function mockListRecipesAPI(token: string): Promise<Recipe[]> {
 
     return Promise.resolve(cards);
 }
+
+
+export async function mockSaveRecipeAPI(formData: FormData, token: string): Promise<{status: number}> {
+    const userInfo = verifyToken(token);
+    console.log(`User info ${userInfo}`);
+
+
+    return Promise.resolve({status: 200});
+}
