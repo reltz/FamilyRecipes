@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { checkAuthStatus, login } from '../services/login-service';
+import { Box, Button, TextField } from '@mui/material';
 
 interface LoginProps {
   onLogin: (status: boolean) => void;
@@ -35,23 +36,25 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   };
 
   return (
-    <div>
+    <Box sx={{margin: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
       <h2>Login</h2>
-      <input
+      <TextField
         type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        sx={{margin: 1}}
       />
-      <input
+      <TextField
         type="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        sx={{margin: 1}}
       />
-      <button onClick={handleLogin}>Login</button>
+      <Button variant='outlined' onClick={handleLogin} sx={{margin: 1}}>Login</Button>
       {error && <p>{error}</p>}
-    </div>
+    </Box>
   );
 };
 
