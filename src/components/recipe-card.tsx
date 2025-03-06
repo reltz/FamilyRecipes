@@ -1,42 +1,39 @@
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Collapse, IconButton, Typography } from "@mui/material"
-import { MoreVert }  from '@mui/icons-material';
+import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material"
 import { red } from "@mui/material/colors";
+import { Recipe } from "../types/recipe";
 
 export interface CardComponentProps {
-    cardData: CardData
+    cardData: Recipe
   }
 
-  export interface CardData {
-    title: string;
-    description: string;
-  }
+
 
 function RecipeCard(props: CardComponentProps) {
     return (
-        <Card sx={{ maxWidth: 345, marginTop: 9 }}>
+        <Card sx={{ maxWidth: 345, marginTop: 2 }}>
         <CardHeader
           avatar={
             <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-              R
+              {props.cardData.author[0]}
             </Avatar>
           }
-          action={
-            <IconButton aria-label="settings">
-              <MoreVert />
-            </IconButton>
-          }
-          title={props.cardData.title}
+          // action={
+          //   <IconButton aria-label="settings">
+          //     <MoreVert />
+          //   </IconButton>
+          // }
+          title={props.cardData.name}
           subheader="September 14, 2016"
         />
         <CardMedia
           component="img"
           height="194"
           image="mock_food.jpg"
-          alt={props.cardData.title}
+          alt={props.cardData.name}
         />
         <CardContent>
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-            {props.cardData.description}
+            {props.cardData.preparation}
           </Typography>
         </CardContent>
         <CardActions disableSpacing>

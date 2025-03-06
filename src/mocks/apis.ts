@@ -42,6 +42,71 @@ const cards: Recipe[] = [
         preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
         author: "Rodrigo"
     },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Rodrigo"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Rodrigo"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Luiza"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Deise"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Cristina"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Rodrigo"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Luiza"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Deise"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Cristina"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Rodrigo"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Luiza"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Deise"
+    },
+    { 
+        name: "Spaghetti Bolognese", 
+        preparation: "A classic Italian pasta dish with a rich meat sauce..." ,
+        author: "Cristina"
+    }
     // Add more cards as needed
 ];
 export async function mockListRecipesAPI(token: string): Promise<Recipe[]> {
