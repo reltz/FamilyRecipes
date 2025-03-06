@@ -1,9 +1,10 @@
 import { Box } from "@mui/material";
-import RecipeCard, { CardData } from './recipe-card';
+import RecipeCard  from './recipe-card';
+import { Recipe } from "../types/recipe";
 
 // Define the type for the props of the CardList component
 interface CardListProps {
-    cards: CardData[]; // An array of CardData
+    cards: Recipe[]; // An array of CardData
 }
 
 

@@ -17,7 +17,7 @@ function AppHeader(props: AppHeaderProps) {
                         edge="start"
                         color="inherit"
                         aria-label="menu"
-                        sx={{ mr: 2 }}
+                        sx={{ mr: 2, ml: 2 }}
                     >
                         <MenuIcon />
                     </IconButton>
