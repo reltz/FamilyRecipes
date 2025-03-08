@@ -41,12 +41,14 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       <TextField
         type="text"
         placeholder="Username"
+        name ="username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         sx={{margin: 1}}
       />
       <TextField
         type="password"
+        name="password"
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}

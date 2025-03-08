@@ -14,7 +14,7 @@ export function mockAuthApi(params: LoginParams): LoginResponse {
         isAuthorized = true;
 
         // Fake JWT token (this is NOT a real JWT)
-        userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNzQxMjIyMDE5IiwidXNlcm5hbWUiOiJKb2huIERvZSIsImV4cCI6MTc0MTIyMjA5Mn0.bzHqhdsoroYX5GztB52kGsGbxJAHfq5dwQKIuCjADNQ";
+        userToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNzQxMjIyMDE5IiwidXNlcm5hbWUiOiJKb2huIERvZSIsImV4cCI6MTc0NjA0ODg3Nn0.KLbFcUq3zRc2oxL9MZtDKhxYynCvfuDJnBfZLjFwvD4";
     }
 
     return { token: userToken, isAuthorized };
@@ -114,4 +114,13 @@ export async function mockListRecipesAPI(token: string): Promise<Recipe[]> {
     console.log(`User info ${userInfo}`);
 
     return Promise.resolve(cards);
+}
+
+
+export async function mockSaveRecipeAPI(formData: FormData, token: string): Promise<{status: number}> {
+    const userInfo = verifyToken(token);
+    console.log(`User info ${userInfo}`);
+
+
+    return Promise.resolve({status: 200});
 }
