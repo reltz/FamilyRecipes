@@ -1,11 +1,11 @@
 import { mockListRecipesAPI, mockSaveRecipeAPI } from "../mocks/apis";
-import { Recipe } from "../types/recipe";
+import { ListRecipesResponse } from "../types/api";
 import { getToken } from "./login-service";
 
 export const useMockBe = true;
 export const baseUrl = "http://localhost:3000";
 
-export async function listRecipes(): Promise<Recipe[]> {
+export async function listRecipes(page: number): Promise<ListRecipesResponse> {
     const {token} = getToken();
     if(!token) {
         console.info("no token present");
@@ -14,14 +14,14 @@ export async function listRecipes(): Promise<Recipe[]> {
 
 
     if(useMockBe) {
-        const recipes = await mockListRecipesAPI(token)
+        const recipes = await mockListRecipesAPI(token, page)
         console.log(`Recipes are: ${JSON.stringify(recipes)}`)
         return recipes;
     } else {
         let response;
         
         try {
-            response = await fetch(`${baseUrl}/list-recipes`, {
+            response = await fetch(`${baseUrl}/list-recipes?page=${page}`, {
                 method: "GET",
                 headers: {
                   "Content-Type": "application/json",
@@ -38,8 +38,6 @@ export async function listRecipes(): Promise<Recipe[]> {
         
         return response.json();
     }
-
-  
 }
 
 
