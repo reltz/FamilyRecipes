@@ -1,5 +1,6 @@
 import { mockListRecipesAPI, mockSaveRecipeAPI } from "../mocks/apis";
 import { ListRecipesResponse } from "../types/api";
+import { Log } from "./logging-service";
 import { getToken } from "./login-service";
 
 export const useMockBe = true;
@@ -8,14 +9,12 @@ export const baseUrl = "http://localhost:3000";
 export async function listRecipes(page: number): Promise<ListRecipesResponse> {
     const {token} = getToken();
     if(!token) {
-        console.info("no token present");
         return Promise.reject(Error("no token in the application"));
     }
 
 
     if(useMockBe) {
         const recipes = await mockListRecipesAPI(token, page)
-        console.log(`Recipes are: ${JSON.stringify(recipes)}`)
         return recipes;
     } else {
         let response;
@@ -28,11 +27,9 @@ export async function listRecipes(page: number): Promise<ListRecipesResponse> {
                 },
               });
               if (!response.ok) {
-                console.error(`Error fetching recipes: ${response.statusText}` )
                 throw new Error(`Error fetching data: ${response.statusText}`);
               }
         } catch(er) {
-            console.error(`Error fetching recipes: ${JSON.stringify(er)}` )
             throw new Error(`Error fetching data: ${JSON.stringify(er)}`);
         }
         
@@ -44,19 +41,13 @@ export async function listRecipes(page: number): Promise<ListRecipesResponse> {
 export async function saveRecipe(formData: FormData): Promise<void> {
     const {decoded, token} = getToken();
     if(!token || !decoded) {
-        console.info("no token present");
+        Log(`Trying to save Recipe - not token present`);
         return Promise.reject(Error("no token in the application"));
     }
 
     const user = decoded.username;
     formData.append("author", user);
 
-
-
-    // const response = await fetch('/api/your-endpoint', {
-    //     method: 'POST',
-    //     body: formData, // don't stringify formData!
-    //   });
 
     const response = await mockSaveRecipeAPI(formData, token);
 

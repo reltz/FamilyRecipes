@@ -9,6 +9,7 @@ import { checkAuthStatus, clearLocalToken } from "./services/login-service";
 import { listRecipes } from "./services/api-service";
 import { Recipe } from "./types/recipe";
 import RecipeView from "./components/recipe-view";
+import { Log } from "./services/logging-service";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -38,7 +39,7 @@ function App() {
 
     try {
       const { recipes, total } = await listRecipes(pageNumber); // Fetch recipes and the total count
-      console.log(`Loaded ${recipes.length} recipes, Total: ${total}`);
+      Log(`Loaded ${recipes.length} recipes, Total: ${total}`);
 
       // Append the new recipes to the existing ones
       setRecipes((prev) => [...prev, ...recipes]);
@@ -48,7 +49,8 @@ function App() {
       setHasMore(loadedRecipesCount < total); // If loaded recipes count is less than total, there are more pages
 
     } catch (error) {
-      console.error("Error fetching recipes:", error);
+        Log(`Error fetching recipes: ${error}`,'error');
+        throw error;
     }
     setLoading(false);
   };

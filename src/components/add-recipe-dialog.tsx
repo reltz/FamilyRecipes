@@ -8,6 +8,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { saveRecipe } from "../services/api-service";
+import { Log } from "../services/logging-service";
 
 interface RecipeDialogProps {
   open: boolean;
@@ -35,10 +36,11 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
     }
 
     try {
-      const savedRecipe = await saveRecipe(formData);
-      console.log('Recipe saved successfully', savedRecipe);
+      await saveRecipe(formData);
+      Log(`Recipe saved successfully ${recipeName}`, 'info');
     } catch (error) {
-      console.log('Error saving recipe', error);
+      Log(`Error saving recipe: ${error}`,'error');
+      throw error;
     }
 
     handleDialogClose();
