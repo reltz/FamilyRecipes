@@ -3,6 +3,7 @@ export interface Recipe {
     name: string;
     author: string;
     preparation: string;
+    createdAt: string;
     ingredients?: string;
     photoUrl?: string;
 }

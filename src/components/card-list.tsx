@@ -2,6 +2,7 @@ import { Box, TextField, Button, CircularProgress } from "@mui/material";
 import RecipeCard from "./recipe-card";
 import { Recipe } from "../types/recipe";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 interface CardListProps {
     recipes: Recipe[];
@@ -17,6 +18,7 @@ function CardList({
   loading
 }: CardListProps) {
   const [search, setSearch] = useState("");
+  const { t } = useTranslation();
 
 
   // Filter recipes by search input
@@ -28,7 +30,7 @@ function CardList({
     <Box sx={{ p: 2 }}>
       {/* Search Bar */}
       <TextField
-        label="Search Recipes"
+        label={t("search-recipes")}
         variant="outlined"
         fullWidth
         value={search}
@@ -41,7 +43,7 @@ function CardList({
         {filteredRecipes.length > 0 ? (
           filteredRecipes.map((recipe, index) => <RecipeCard key={index} cardData={recipe} />)
         ) : (
-          <p>No recipes found.</p>
+          <p>{t("no-recipes-found")}</p>
         )}
       </Box>
 
@@ -52,7 +54,7 @@ function CardList({
             <CircularProgress />
           ) : (
             <Button variant="contained" onClick={handleLoadMore}>
-              Load More
+              {t("load-more")}
             </Button>
           )}
         </Box>

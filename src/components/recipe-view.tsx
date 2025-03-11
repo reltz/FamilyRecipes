@@ -1,22 +1,25 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Recipe } from "../types/recipe";
 import { Box, Button, Card, CardContent, CardMedia, Typography, Divider } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const RecipeView = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const recipe = location.state?.recipe as Recipe | undefined;
 
+  const { t } = useTranslation();
+
   if (!recipe) {
     return <Typography variant="h6" color="error" sx={{ textAlign: "center", mt: 4 }}>
-      Recipe not found.
+     {t("no-recipes-found")}
     </Typography>;
   }
 
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
       <Button variant="contained" color="primary" onClick={() => navigate(-1)} sx={{ mb: 2 }}>
-        Back
+      {t("back")}
       </Button>
 
       <Card>
@@ -34,7 +37,7 @@ const RecipeView = () => {
           <Divider sx={{ my: 2 }} />
 
           <Typography variant="h6" gutterBottom>
-            Ingredients
+          {t("ingredients")}
           </Typography>
           <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
             {recipe.ingredients || "Not specified"}
@@ -43,7 +46,7 @@ const RecipeView = () => {
           <Divider sx={{ my: 2 }} />
 
           <Typography variant="h6" gutterBottom>
-            Preparation
+          {t("preparation")}
           </Typography>
           <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
             {recipe.preparation}

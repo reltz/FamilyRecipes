@@ -1,0 +1,20 @@
+{
+  "logout": "Sair",
+  "login": "Login",
+  "add-recipe": "Adicionar receits",
+  "ingredients": "Ingredientes",
+  "preparation": "Preparação",
+  "add-photo": "Adicionar foto",
+  "selected-file": "Arquivo selecionado",
+  "save": "Salvar",
+  "close": "Fechar",
+  "header-title": "Receitas de Família",
+  "no-recipes-found": "Nenhuma receita encontrada",
+  "load-more": "Carregar mais",
+  "username": "Nome de usuário",
+  "password": "Senha",
+  "recipe": "Receita",
+  "back": "Voltar",
+  "search-recipes": "Buscar receitas"
+
+}

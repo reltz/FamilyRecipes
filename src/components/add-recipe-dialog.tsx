@@ -9,6 +9,7 @@ import {
 import { useState } from "react";
 import { saveRecipe } from "../services/api-service";
 import { Log } from "../services/logging-service";
+import { useTranslation } from 'react-i18next';
 
 interface RecipeDialogProps {
   open: boolean;
@@ -16,6 +17,9 @@ interface RecipeDialogProps {
 }
 
 function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
+
+  const { t } = useTranslation();
+
   const [recipeName, setRecipeName] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [preparation, setPreparation] = useState("");
@@ -53,13 +57,13 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
           variant="h6"
           sx={{ textAlign: "center", color: "primary.main", marginBottom: 2 }}
         >
-          Adicionar Receita
+          {t('add-recipe')}
         </Typography>
 
         <Stack direction="column" spacing={2}>
           <TextField label="Nome da Receita" required sx={{ margin: 2 }}   value={recipeName} onChange={(e) => setRecipeName(e.target.value)} />
           <TextField
-            label="Ingredientes"
+            label= {t('ingredients')}
             sx={{ margin: 2 }}
             multiline
             rows={5}
@@ -67,7 +71,7 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
             onChange={(e) => setIngredients(e.target.value)}
           />
           <TextField
-            label="Instruções de Preparação"
+            label={t('preparation')}
             sx={{ margin: 2 }}
             required
             multiline
@@ -87,20 +91,20 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
               }}/>
           <label htmlFor="contained-button-file">
             <Button variant="outlined" component="span" fullWidth>
-              Upload Photo
+            {t('add-photo')}
             </Button>
-            {fileName && <p>Selected file: {fileName}</p>}
+            {fileName && <p>{t('selected-file')} {fileName}</p>}
           </label>
 
           <Stack direction="row" spacing={2}>
             <Box flexGrow={1}>
               <Button variant="contained" fullWidth onClick={handleSave}>
-                Save
+              {t('save')}
               </Button>
             </Box>
             <Box flexGrow={1}>
               <Button onClick={handleDialogClose} fullWidth>
-                Close
+              {t('close')}
               </Button>
             </Box>
           </Stack>
