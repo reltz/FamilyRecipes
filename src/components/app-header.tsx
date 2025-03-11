@@ -54,6 +54,7 @@ function AppHeader(props: AppHeaderProps) {
             aria-label="menu"
             sx={{ mr: 2, ml: 2 }}
             onClick={handleMenuOpen}
+            disabled={!props.isAuthenticated}
           >
             <MenuIcon />
           </IconButton>
