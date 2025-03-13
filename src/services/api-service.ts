@@ -2,8 +2,9 @@ import { mockListRecipesAPI, mockSaveRecipeAPI } from "../mocks/apis";
 import { ListRecipesResponse } from "../types/api";
 import { Log } from "./logging-service";
 import { getToken } from "./login-service";
+import axios from 'axios';
 
-export const useMockBe = false;
+export const useMockBe = true;
 export const baseUrl = "https://f4c15j8xm0.execute-api.ca-central-1.amazonaws.com/prod";
 
 export async function listRecipes(limit: number, cursor: string): Promise<ListRecipesResponse> {
@@ -14,8 +15,9 @@ export async function listRecipes(limit: number, cursor: string): Promise<ListRe
 
 
     if(useMockBe) {
-        const recipes = await mockListRecipesAPI(token, limit)
-        return recipes;
+        const recipes = await mockListRecipesAPI()
+        Log(JSON.stringify(recipes));
+          return recipes;
     } else {
         let response;
         
@@ -54,18 +56,20 @@ export async function saveRecipe(formData: FormData): Promise<void> {
        response = await mockSaveRecipeAPI(formData, token);
 
     } else {
-      response = await fetch(`${baseUrl}/recipes/create`, {
-        method: "POST",
+      response = await axios.post(`${baseUrl}/recipes/create`, formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${token}`,
-        },
-        body: formData,
+          // Do not manually set Content-Type, Axios will set it automatically
+        }
       });
-      if (!response.ok) {
+      if (response.status <200 || response.status > 399) {
         throw new Error(`Error fetching data: ${response.statusText}`);
+      }else {
+        Log("Created recipe!");
       }
     }
+
+     // "Content-Type": "multipart/form-data",
 
       if (response.status !== 200) {
         throw new Error('Error saving recipe');
