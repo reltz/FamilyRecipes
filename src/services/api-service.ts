@@ -4,7 +4,7 @@ import { Log } from "./logging-service";
 import { getToken } from "./login-service";
 import axios from 'axios';
 
-export const useMockBe = true;
+export const useMockBe = false;
 export const baseUrl = "https://f4c15j8xm0.execute-api.ca-central-1.amazonaws.com/prod";
 
 export async function listRecipes(limit: number, cursor: string): Promise<ListRecipesResponse> {
@@ -22,21 +22,28 @@ export async function listRecipes(limit: number, cursor: string): Promise<ListRe
         let response;
         
         try {
-            response = await fetch(`${baseUrl}/recipes/list-recipes?limit=${limit}&cursor=${cursor}`, {
-                method: "GET",
-                headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": `Bearer ${token}`,
-                },
-              });
-              if (!response.ok) {
-                throw new Error(`Error fetching data: ${response.statusText}`);
-              }
+          response = await axios.get(`${baseUrl}/recipes/list-recipes?limit=${limit}&cursor=${cursor}`, {
+            headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                  },
+          });
+            // response = await fetch(`${baseUrl}/recipes/list-recipes?limit=${limit}&cursor=${cursor}`, {
+            //     method: "GET",
+            //     headers: {
+            //       "Content-Type": "application/json",
+            //       "Authorization": `Bearer ${token}`,
+            //     },
+            //   });
+            //   if (!response.ok) {
+            //     throw new Error(`Error fetching data: ${response.statusText}`);
+            //   }
         } catch(er) {
             throw new Error(`Error fetching data: ${JSON.stringify(er)}`);
         }
         
-        return response.json();
+        // return response.json();
+        return response.data
     }
 }
 
@@ -68,12 +75,4 @@ export async function saveRecipe(formData: FormData): Promise<void> {
         Log("Created recipe!");
       }
     }
-
-     // "Content-Type": "multipart/form-data",
-
-      if (response.status !== 200) {
-        throw new Error('Error saving recipe');
-      }
-    
-      return Promise.resolve();
 }

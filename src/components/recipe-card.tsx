@@ -30,7 +30,7 @@ function RecipeCard(props: CardComponentProps) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label={t("recipe")}>
-            {recipe.author[0]}
+            {recipe.author[0].toUpperCase()}
           </Avatar>
         }
         // action={
