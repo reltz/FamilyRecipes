@@ -1,4 +1,4 @@
 export interface ListRecipesResponse {
     recipes: Recipe[];
-    total: number;
+    cursor?: string;
 }

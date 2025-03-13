@@ -50,7 +50,8 @@ export async function login(params: LoginParams): Promise<boolean> {
       }
       isAuthorized = true;
       const data = await response.json(); // Parse JSON response
-      token = data.userSessionToken; // Retrieve the token
+      console.log(`Data: ${JSON.stringify(data)}`)
+      token = data.token; // Retrieve the token
     } catch (er) {
       Log(`Error with request: ${er}`, 'error');
       throw er;
@@ -62,6 +63,7 @@ export async function login(params: LoginParams): Promise<boolean> {
   }
 
   if (token) {
+    console.log(`Will save token in LS!`);
     localStorage.setItem(lsTokenKey, token); // Store status in sessionStorage
   }
   Log(`Token stored: ${!!token}, Authenticated: ${isAuthorized}`);

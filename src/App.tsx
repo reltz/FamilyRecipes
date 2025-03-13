@@ -17,8 +17,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(checkAuthStatus());
   const [loading, setLoading] = useState<boolean>(true);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true); // Track if there are more recipes to load
+  const [cursor, setCursor] = useState<string | null>(null); // Store the cursor for pagination
   const hasMounted = useRef(false);
 
   const navigate = useNavigate();
@@ -34,19 +34,28 @@ function App() {
     navigate("/");
   };
 
-  const fetchRecipes = async (pageNumber: number) => {
+  const fetchRecipes = async () => {
     setLoading(true);
 
     try {
-      const { recipes, total } = await listRecipes(pageNumber); // Fetch recipes and the total count
-      Log(`Loaded ${recipes.length} recipes, Total: ${total}`);
+      const requestCursor = cursor ?? "";
+      const response = await listRecipes(ITEMS_PER_PAGE, requestCursor); // Fetch recipes and the total count
+      
+      const {recipes} = response;
+      if(response.cursor) {
+        setCursor(response.cursor);
+      } else {
+        setCursor("");
+        setHasMore(false);
+      }
+      Log(`Loaded ${recipes.length}`);
 
       // Append the new recipes to the existing ones
       setRecipes((prev) => [...prev, ...recipes]);
 
-      // Set 'hasMore' based on the total count and the number of recipes already loaded
-      const loadedRecipesCount = (pageNumber - 1) * ITEMS_PER_PAGE + recipes.length;
-      setHasMore(loadedRecipesCount < total); // If loaded recipes count is less than total, there are more pages
+      if(cursor != "") {
+        setHasMore(true); // If loaded recipes count is less than total, there are more pages
+      }
 
     } catch (error) {
         Log(`Error fetching recipes: ${error}`,'error');
@@ -62,7 +71,7 @@ function App() {
     if (authStatus) {
       if (!hasMounted.current) {
         hasMounted.current = true;
-      fetchRecipes(page); // Fetch the first page of recipes
+      fetchRecipes(); // Fetch the first page of recipes
       }
     } else {
       setLoading(false);
@@ -71,8 +80,7 @@ function App() {
 
   // Handle loading next page
   const handleLoadMore = () => {
-    setPage((prev) => prev + 1); // Increment page
-    fetchRecipes(page + 1); // Fetch next page of recipes
+    fetchRecipes(); // Fetch next page of recipes
   };
 
   if (loading) {
