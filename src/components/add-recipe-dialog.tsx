@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { saveRecipe } from "../services/api-service";
+import { getPreSignedURL, PhotoURLs, saveRecipe } from "../services/api-service";
 import { Log } from "../services/logging-service";
 import { useTranslation } from 'react-i18next';
 
@@ -28,22 +28,28 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
 
 
   const handleSave = async () => {
-    const formData = new FormData();
+    // upload file first!!
+    let photoUrl: string | undefined;
 
-    formData.append("name", recipeName);
-    formData.append("preparation", preparation);
-    if(ingredients){
-        formData.append("ingredients", ingredients);
-    }
     if (file) {
-      formData.append("photo", file);
+      let urls: PhotoURLs;
+      urls = await getPreSignedURL();
+      if (urls.preSignedURL) {
+        //Upload photo to S3 using SDK here!!! TODO ROD
+      }
+      photoUrl = urls.photoURL;
     }
 
     try {
-      await saveRecipe(formData);
+      await saveRecipe({
+        name: recipeName,
+        preparation,
+        ingredients: ingredients,
+        photoUrl
+      });
       Log(`Recipe saved successfully ${recipeName}`, 'info');
     } catch (error) {
-      Log(`Error saving recipe: ${error}`,'error');
+      Log(`Error saving recipe: ${error}`, 'error');
       throw error;
     }
 
@@ -61,9 +67,9 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
         </Typography>
 
         <Stack direction="column" spacing={2}>
-          <TextField label="Nome da Receita" required sx={{ margin: 2 }}   value={recipeName} onChange={(e) => setRecipeName(e.target.value)} />
+          <TextField label="Nome da Receita" required sx={{ margin: 2 }} value={recipeName} onChange={(e) => setRecipeName(e.target.value)} />
           <TextField
-            label= {t('ingredients')}
+            label={t('ingredients')}
             sx={{ margin: 2 }}
             multiline
             rows={5}
@@ -78,7 +84,7 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
             rows={5}
             value={preparation}
             onChange={(e) => setPreparation(e.target.value)}
-            
+
           />
           <input
             accept="image/*"
@@ -86,12 +92,12 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
             type="file"
             style={{ display: "none" }}
             onChange={(e) => {
-                setFile(e.target.files?.[0] || null);
-                setFileName(e.target.files?.[0]?.name || "");
-              }}/>
+              setFile(e.target.files?.[0] || null);
+              setFileName(e.target.files?.[0]?.name || "");
+            }} />
           <label htmlFor="contained-button-file">
             <Button variant="outlined" component="span" fullWidth>
-            {t('add-photo')}
+              {t('add-photo')}
             </Button>
             {fileName && <p>{t('selected-file')} {fileName}</p>}
           </label>
@@ -99,12 +105,12 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
           <Stack direction="row" spacing={2}>
             <Box flexGrow={1}>
               <Button variant="contained" fullWidth onClick={handleSave}>
-              {t('save')}
+                {t('save')}
               </Button>
             </Box>
             <Box flexGrow={1}>
               <Button onClick={handleDialogClose} fullWidth>
-              {t('close')}
+                {t('close')}
               </Button>
             </Box>
           </Stack>
