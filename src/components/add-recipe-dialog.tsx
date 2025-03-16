@@ -25,15 +25,45 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
   const [preparation, setPreparation] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
+  const [validationError, setValidationError] = useState(false);
+  const [requiredFields, setRequiredFields] = useState(false);
+
+  const handleCloseInternal = () => {
+    setRecipeName("");
+    setIngredients("");
+    setPreparation("");
+    setFile(null);
+    setFileName("");
+    setValidationError(false);
+    setRequiredFields(false);
+
+    handleDialogClose();
+  }
 
 
   const handleSave = async () => {
     // upload file first!!
     let photoUrl: string | undefined;
 
+    if(!recipeName || !preparation) {
+      setRequiredFields(true);
+      return;
+    } else {
+      setRequiredFields(false);
+    }
+
     if (file) {
       let urls: PhotoURLs;
-      urls = await getPreSignedURL();
+      const extension = fileName.split('.')[1];
+      if (!['jpg', 'jpeg', 'png'].includes(extension)) {
+        setValidationError(true);
+      } else {
+        setValidationError(false);
+      }
+      const fileNameForUpload = `${recipeName}.${extension}`;
+
+      Log(`FileName: ${fileNameForUpload}`);
+      urls = await getPreSignedURL(fileNameForUpload );
       if (urls.preSignedURL) {
         //Upload photo to S3 using SDK here!!! TODO ROD
       }
@@ -95,6 +125,9 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
               setFile(e.target.files?.[0] || null);
               setFileName(e.target.files?.[0]?.name || "");
             }} />
+          {validationError && (
+            <Typography sx={{ color: "red", fontSize: "14px", mt: 1 }}>{t('invalid-image-format')}</Typography>
+          )}
           <label htmlFor="contained-button-file">
             <Button variant="outlined" component="span" fullWidth>
               {t('add-photo')}
@@ -102,6 +135,9 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
             {fileName && <p>{t('selected-file')} {fileName}</p>}
           </label>
 
+          {requiredFields && (
+            <Typography sx={{ color: "red", fontSize: "14px", mt: 1 }}>{t('create-recipe-required')}</Typography>
+          )}
           <Stack direction="row" spacing={2}>
             <Box flexGrow={1}>
               <Button variant="contained" fullWidth onClick={handleSave}>
@@ -109,7 +145,7 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
               </Button>
             </Box>
             <Box flexGrow={1}>
-              <Button onClick={handleDialogClose} fullWidth>
+              <Button onClick={handleCloseInternal} fullWidth>
                 {t('close')}
               </Button>
             </Box>

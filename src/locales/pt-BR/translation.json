@@ -15,6 +15,7 @@
   "password": "Senha",
   "recipe": "Receita",
   "back": "Voltar",
-  "search-recipes": "Buscar receitas"
-
+  "search-recipes": "Buscar receitas",
+  "invalid-image-format": "Formato de imagem invalido, por favor use JPG ou PNG",
+  "create-recipe-required": "Nome e preparação da receita devem ser preenchidos"
 }
