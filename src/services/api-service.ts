@@ -108,3 +108,27 @@ export async function getPreSignedURL(fileNameForBucket: string): Promise<PhotoU
     return urls;
   }
 }
+
+
+export async function uploadImageS3Bucket(file: File, url: string): Promise<boolean> {
+  const options: RequestInit = {
+    method: 'PUT',
+    body: file,
+    headers: {
+      'Content-Type': file.type,
+    },
+  };
+
+  try {
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new Error('Upload failed');
+    }
+    Log('Upload successful');
+    return true;
+  } catch (error) {
+    Log(`Error: ${error}`);
+    return false;
+  }
+}

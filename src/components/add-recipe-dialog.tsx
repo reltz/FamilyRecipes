@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { getPreSignedURL, PhotoURLs, saveRecipe } from "../services/api-service";
+import { getPreSignedURL, PhotoURLs, saveRecipe, uploadImageS3Bucket } from "../services/api-service";
 import { Log } from "../services/logging-service";
 import { useTranslation } from 'react-i18next';
 
@@ -64,10 +64,14 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
 
       Log(`FileName: ${fileNameForUpload}`);
       urls = await getPreSignedURL(fileNameForUpload );
+      let successUpload;
       if (urls.preSignedURL) {
         //Upload photo to S3 using SDK here!!! TODO ROD
+        successUpload = await uploadImageS3Bucket(file, urls.preSignedURL);
       }
-      photoUrl = urls.photoURL;
+      if(successUpload){
+        photoUrl = urls.photoURL;
+      }
     }
 
     try {
