@@ -3,7 +3,7 @@ import { CreateRecipeRequestInput, ListRecipesResponse } from "../types/api";
 import { Log } from "./logging-service";
 import { getToken } from "./login-service";
 
-export const useMockBe = true;
+export const useMockBe = false;
 export const baseUrl = "https://94bpys6vk3.execute-api.ca-central-1.amazonaws.com/prod";
 
 export interface PhotoURLs {
