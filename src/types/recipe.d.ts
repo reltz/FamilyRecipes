@@ -1,6 +1,14 @@
 export interface Recipe {
+    id: string;
     name: string;
     author: string;
-    ingredients?: string;
+    familyId: string;
+    familyName: string;
     preparation: string;
+    createdAt: string;
+    ingredients?: string;
+    photoUrl?: string;
 }
+
+
+

@@ -1,6 +1,7 @@
 import { mockAuthApi } from "../mocks/apis";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { baseUrl, useMockBe as useMockBackend } from "./api-service";
+import { Log } from "./logging-service";
 
 export interface LoginParams {
   username: string;
@@ -26,7 +27,7 @@ export async function login(params: LoginParams): Promise<boolean> {
     const response = await mockAuthApi(params);
     token = response.token;
     isAuthorized = response.isAuthorized;
-    console.log(`IS AUTHORIZED: ${isAuthorized}`);
+    Log(`IS AUTHORIZED: ${isAuthorized}`);
   }
   else {
     let response;
@@ -49,9 +50,11 @@ export async function login(params: LoginParams): Promise<boolean> {
       }
       isAuthorized = true;
       const data = await response.json(); // Parse JSON response
-      token = data.userSessionToken; // Retrieve the token
+      console.log(`Data: ${JSON.stringify(data)}`)
+      token = data.token; // Retrieve the token
     } catch (er) {
-      console.error(`Error with request: ${er}`)
+      Log(`Error with request: ${er}`, 'error');
+      throw er;
     }
   }
 
@@ -60,9 +63,10 @@ export async function login(params: LoginParams): Promise<boolean> {
   }
 
   if (token) {
+    console.log(`Will save token in LS!`);
     localStorage.setItem(lsTokenKey, token); // Store status in sessionStorage
   }
-  console.log(`Token stored: ${!!token}, Authenticated: ${isAuthorized}`);
+  Log(`Token stored: ${!!token}, Authenticated: ${isAuthorized}`);
   return isAuthorized;
 }
 
@@ -85,27 +89,27 @@ export function getToken(): {
 
   const token = getLocalToken();
   if (!token) {
-    console.log("No token found");
+    Log("Getting local token: No token found");
     return defaultReturnValue;
   }
 
   try {
     const decoded = jwtDecode<CustomJWTPayload>(token);
-    console.log(`Decoded is: ${JSON.stringify(decoded)}`);
+    Log(`Decoded is: ${JSON.stringify(decoded)}`);
     if (!decoded || (decoded.exp && decoded.exp * 1000 <= Date.now())) { // Token could not be decoded or is expired
-      console.log(decoded ? "Token expired!" : "Token could not be decoded");
+      Log(decoded ? "Token expired!" : "Token could not be decoded");
       clearLocalToken(); // Cleanup invalid or expired token
       return defaultReturnValue;
     }
 
     // Token is valid and not expired
-    console.log("Token is valid");
+    Log("Token is valid");
     return {
       decoded,
       token,
     };
   } catch (er) {
-    console.error("Invalid token:", er);
+    Log(`Invalid token: ${er}`, 'error');
     clearLocalToken();
   }
 
@@ -114,20 +118,20 @@ export function getToken(): {
 
 
 export function checkAuthStatus(): boolean {
-  console.log("Checking status!");
+  Log("Checking status!");
 
   const { decoded, token } = getToken();
 
   if (!token) {
-    console.log("No token found");
+    Log("No token found");
     return false;
   }
 
   if (decoded) {
-    console.log("Token is valid and not expired");
+    Log("Token is valid and not expired");
     return true;
   } else {
-    console.log("Token is invalid or expired");
+    Log("Token is invalid or expired");
     return false;
   }
 }
