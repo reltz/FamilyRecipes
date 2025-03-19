@@ -68,9 +68,13 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
 
       Log(`FileName: ${fileNameForUpload}`);
       urls = await getPreSignedURL(fileNameForUpload );
-      let successUpload;
+  
+      if(!urls.uploadUrl) {
+        alert("Upload da foto falhou, tente de novo ou salve a receita sem a foto!");
+        return;
+      }
 
-      if (urls.uploadUrl) {
+      const successUpload = await new Promise<boolean>((resolve) => {
         loadImage(
           file,
           function (canvasOrImg) {
@@ -78,13 +82,16 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
               canvasOrImg.toBlob(async function (blob) {
                 if (blob) {
                   const fileFromBlob = new File([blob], file.name, { type: blob.type });
-                  await uploadImageS3Bucket(fileFromBlob, urls.uploadUrl);
+                  const uploadSuccess = await uploadImageS3Bucket(fileFromBlob, urls.uploadUrl);
+                  resolve(uploadSuccess);
                 } else {
                   console.error('Failed to create blob from canvas');
+                  resolve(false);
                 }
               }, file.type);
             } else {
               console.error('Expected a canvas, but got an image element');
+              resolve(false);
             }
           },
           {
@@ -93,7 +100,9 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
             canvas: true,
           }
         );
-      }
+      });
+      //DEBUG
+      console.info(`Is upload succes :${successUpload}`);
       // if (urls.uploadUrl) {
       //   successUpload = await uploadImageS3Bucket(file, urls.uploadUrl);
       // }
@@ -102,6 +111,7 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
       }
     }
 
+    console.log(`fiLE: ${!!file} and  photouRL: ${!!photoUrl}`);
     if(!file && !photoUrl || file && photoUrl){
       try {
         await saveRecipe({
