@@ -84,7 +84,7 @@ function App() {
     } else {
       setLoading(false);
     }
-  }, [refreshTrigger]); // Removed isAuthenticated as a dependency
+  }, [refreshTrigger, isAuthenticated]); // Removed isAuthenticated as a dependency
 
   
   // Handle loading next page
