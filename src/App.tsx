@@ -17,10 +17,19 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(checkAuthStatus());
   const [loading, setLoading] = useState<boolean>(true);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [hasMore, setHasMore] = useState(true); // Track if there are more recipes to load
+  const [hasMore, setHasMore] = useState(false); // Track if there are more recipes to load
   const [cursor, setCursor] = useState<string | null>(null); // Store the cursor for pagination
-  const hasMounted = useRef(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0); // Increment to trigger refresh
 
+
+  const onRecipeAdded = () => {
+    setRecipes([]);
+    setCursor(null); // Reset cursor for pagination
+    setHasMore(false); // Reset pagination state
+    setRefreshTrigger((prev) => prev + 1); // Trigger re-fetch without clearing UI immediately
+  };
+
+  const hasMounted = useRef(false);
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -40,10 +49,12 @@ function App() {
     try {
       const requestCursor = cursor ?? "";
       const response = await listRecipes(ITEMS_PER_PAGE, requestCursor); // Fetch recipes and the total count
-      
-      const {recipes} = response;
-      if(response.cursor) {
+
+      const { recipes } = response;
+      if (response.cursor) {
+        Log(`CURSOR IN RESPO: ${response.cursor}`);
         setCursor(response.cursor);
+        setHasMore(true);
       } else {
         setCursor("");
         setHasMore(false);
@@ -52,14 +63,9 @@ function App() {
 
       // Append the new recipes to the existing ones
       setRecipes((prev) => [...prev, ...recipes]);
-
-      if(cursor != "") {
-        setHasMore(true); // If loaded recipes count is less than total, there are more pages
-      }
-
     } catch (error) {
-        Log(`Error fetching recipes: ${error}`,'error');
-        throw error;
+      Log(`Error fetching recipes: ${error}`, 'error');
+      throw error;
     }
     setLoading(false);
   };
@@ -68,16 +74,19 @@ function App() {
   useEffect(() => {
     const authStatus = checkAuthStatus();
     setIsAuthenticated(authStatus);
+  
     if (authStatus) {
-      if (!hasMounted.current) {
+      if (!hasMounted.current || refreshTrigger) { // Runs on first mount or refresh
         hasMounted.current = true;
-      fetchRecipes(); // Fetch the first page of recipes
+        setLoading(true);  // Ensure loading is set before fetching
+        fetchRecipes().finally(() => setLoading(false)); // Ensure loading is turned off
       }
     } else {
       setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [refreshTrigger]); // Removed isAuthenticated as a dependency
 
+  
   // Handle loading next page
   const handleLoadMore = () => {
     fetchRecipes(); // Fetch next page of recipes
@@ -89,11 +98,11 @@ function App() {
 
   return (
     <>
-      <AppHeader handleLogout={handleLogout} isAuthenticated={isAuthenticated} />
+      <AppHeader handleLogout={handleLogout} isAuthenticated={isAuthenticated} onRecipeAdded={onRecipeAdded} />
       <Routes>
         {/* Public route */}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />
-        
+
         {/* Private route */}
         <Route
           path="/"

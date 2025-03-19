@@ -3,6 +3,7 @@ import RecipeCard from "./recipe-card";
 import { Recipe } from "../types/recipe";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Log } from "../services/logging-service";
 
 interface CardListProps {
     recipes: Recipe[];
@@ -19,6 +20,7 @@ function CardList({
 }: CardListProps) {
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
+  Log(`list has more? ${hasMore}`)
 
 
   // Filter recipes by search input

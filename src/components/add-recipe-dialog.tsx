@@ -14,9 +14,10 @@ import { useTranslation } from 'react-i18next';
 interface RecipeDialogProps {
   open: boolean;
   handleDialogClose: () => void;
+  onRecipeAdded: ()=> void;
 }
 
-function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
+function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialogProps) {
 
   const { t } = useTranslation();
 
@@ -83,6 +84,7 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
           photoUrl
         });
         Log(`Recipe saved successfully ${recipeName}`, 'info');
+        onRecipeAdded();
       } catch (error) {
         Log(`Error saving recipe: ${error}`, 'error');
         throw error;

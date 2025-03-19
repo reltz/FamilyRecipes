@@ -17,6 +17,7 @@ import { useTranslation } from "react-i18next";
 interface AppHeaderProps {
   handleLogout: () => void;
   isAuthenticated: boolean;
+  onRecipeAdded: ()=> void;
 }
 
 function AppHeader(props: AppHeaderProps) {
@@ -75,7 +76,7 @@ function AppHeader(props: AppHeaderProps) {
           )}
         </Toolbar>
       </AppBar>
-      <AddRecipeDialog open={open} handleDialogClose={handleDialogClose} />
+      <AddRecipeDialog open={open} handleDialogClose={handleDialogClose} onRecipeAdded={props.onRecipeAdded} />
     </Box>
   );
 }

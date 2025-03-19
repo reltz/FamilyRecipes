@@ -66,7 +66,7 @@ export async function saveRecipe(params: CreateRecipeRequestInput): Promise<void
       body: JSON.stringify(params),
     });
     if (response.status < 200 || response.status > 399) {
-      throw new Error(`Error fetching data: ${response.statusText}`);
+      throw new Error(`Error with API: ${response.statusText}`);
     } else {
       Log("Created recipe!");
     }
