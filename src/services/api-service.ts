@@ -3,11 +3,11 @@ import { CreateRecipeRequestInput, ListRecipesResponse } from "../types/api";
 import { Log } from "./logging-service";
 import { getToken } from "./login-service";
 
-export const useMockBe = false;
+export const useMockBe = true;
 export const baseUrl = "https://94bpys6vk3.execute-api.ca-central-1.amazonaws.com/prod";
 
 export interface PhotoURLs {
-  preSignedURL: string;
+  uploadUrl: string;
   photoURL: string;
 }
 
@@ -56,7 +56,6 @@ export async function saveRecipe(params: CreateRecipeRequestInput): Promise<void
  
   if (useMockBe) {
     return;
-
   } else {
     response = await fetch(`${baseUrl}/recipes/create`, {
       method: 'POST',
@@ -77,38 +76,39 @@ export async function saveRecipe(params: CreateRecipeRequestInput): Promise<void
 
 // returns the pre-signed url and the endUrl
 export async function getPreSignedURL(fileNameForBucket: string): Promise<PhotoURLs> {
-  const { decoded, token } = getToken();
-  if (!token || !decoded) {
-    Log(`Trying to upload recipe image - not token present`);
-    return Promise.reject(Error("no token in the application"));
-  }
-
-  const response = await fetch(`${baseUrl}/recipes/get-bucket-url?fileName=${fileNameForBucket}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-    },
-  });
-
-  const respJson: Record<string, string> = await response.json()
-
-  // "https://familyrecipestack-storageservicerecipestoragebucke-ljfkgzjspehb.s3.ca-central-1.amazonaws.com/public-images/eadb731a-bd9e-4c28-a53c-fd4aa455818d/1742164318066-batata.jpeg?
-
-
-
-  if (response.status < 200 || response.status > 399) {
-    throw new Error(`Error fetching data: ${response.statusText}`);
-  } else {
-    const photoURL = respJson.uploadUrl.split('?X-Amz-Algorithm')[0]; // parse the base url of the pre-signed
-    const urls: PhotoURLs = {
-      photoURL,
-      preSignedURL: respJson.uploadUrl,
+  if(useMockBe) {
+    return {
+      uploadUrl: "https://example.com/1742164318066-batata.jpeg",
+      photoURL: "https://example.com/1742164318066-batata.jpeg",
     }
-    Log(`Urls: ${JSON.stringify(urls)}`);
-    return urls;
+  } else {
+    const { decoded, token } = getToken();
+    if (!token || !decoded) {
+      Log(`Trying to upload recipe image - not token present`);
+      return Promise.reject(Error("no token in the application"));
+    }
+  
+    const response = await fetch(`${baseUrl}/recipes/get-bucket-url?fileName=${fileNameForBucket}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+  
+    const respJson: PhotoURLs = await response.json()
+    if (response.status < 200 || response.status > 399) {
+      throw new Error(`Error fetching data: ${response.statusText}`);
+    } else {
+      const photoURL = respJson.uploadUrl.split('?X-Amz-Algorithm')[0]; // parse the base url of the pre-signed
+      const urls: PhotoURLs = {
+        photoURL,
+        uploadUrl: respJson.uploadUrl,
+      }
+      Log(`Urls: ${JSON.stringify(urls)}`);
+      return urls;
+    }
   }
 }
-
 
 export async function uploadImageS3Bucket(file: File, url: string): Promise<boolean> {
   const options: RequestInit = {
@@ -118,17 +118,20 @@ export async function uploadImageS3Bucket(file: File, url: string): Promise<bool
       'Content-Type': file.type,
     },
   };
-
-  try {
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new Error('Upload failed');
-    }
-    Log('Upload successful');
+  if(useMockBe) {
     return true;
-  } catch (error) {
-    Log(`Error: ${error}`);
-    return false;
+  } else {
+    try {
+      const response = await fetch(url, options);
+  
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+      Log('Upload successful');
+      return true;
+    } catch (error) {
+      Log(`Error: ${error}`);
+      return false;
+    }
   }
 }

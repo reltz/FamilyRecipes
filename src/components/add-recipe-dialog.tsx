@@ -65,9 +65,9 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
       Log(`FileName: ${fileNameForUpload}`);
       urls = await getPreSignedURL(fileNameForUpload );
       let successUpload;
-      if (urls.preSignedURL) {
+      if (urls.uploadUrl) {
         //Upload photo to S3 using SDK here!!! TODO ROD
-        successUpload = await uploadImageS3Bucket(file, urls.preSignedURL);
+        successUpload = await uploadImageS3Bucket(file, urls.uploadUrl);
       }
       if(successUpload){
         photoUrl = urls.photoURL;
