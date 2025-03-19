@@ -1,4 +1,4 @@
-const debugMode = true;
+const debugMode = false;
 
 export function Log(message: string, level: "info" | "log" | "error" = "log"){
     if(debugMode){
