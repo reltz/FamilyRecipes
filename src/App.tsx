@@ -11,7 +11,7 @@ import { Recipe } from "./types/recipe";
 import RecipeView from "./components/recipe-view";
 import { Log } from "./services/logging-service";
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 9;
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(checkAuthStatus());
