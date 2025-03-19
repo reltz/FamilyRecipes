@@ -44,8 +44,7 @@ function RecipeCard(props: CardComponentProps) {
       <CardMedia
         component="img"
         height="194"
-        // image="mock_food.jpg"
-        image={recipe.photoUrl ?? "mock_food.jpg"}
+        image={recipe.photoUrl || "./generic_food.jpg"}
         alt={recipe.name}
       />
       <CardContent>

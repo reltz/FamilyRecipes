@@ -101,11 +101,7 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
           }
         );
       });
-      //DEBUG
-      console.info(`Is upload succes :${successUpload}`);
-      // if (urls.uploadUrl) {
-      //   successUpload = await uploadImageS3Bucket(file, urls.uploadUrl);
-      // }
+  
       if(successUpload){
         photoUrl = urls.photoURL;
       }
