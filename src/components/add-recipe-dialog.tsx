@@ -85,12 +85,12 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
                   const uploadSuccess = await uploadImageS3Bucket(fileFromBlob, urls.uploadUrl);
                   resolve(uploadSuccess);
                 } else {
-                  console.error('Failed to create blob from canvas');
+                  Log('Failed to create blob from canvas', 'error');
                   resolve(false);
                 }
               }, file.type);
             } else {
-              console.error('Expected a canvas, but got an image element');
+              Log('Expected a canvas, but got an image element', 'error');
               resolve(false);
             }
           },
@@ -107,7 +107,6 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
       }
     }
 
-    console.log(`fiLE: ${!!file} and  photouRL: ${!!photoUrl}`);
     if(!file && !photoUrl || file && photoUrl){
       try {
         await saveRecipe({
