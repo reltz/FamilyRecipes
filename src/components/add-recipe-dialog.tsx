@@ -12,6 +12,7 @@ import { Log } from "../services/logging-service";
 import { useTranslation } from 'react-i18next';
 import loadImage from 'blueimp-load-image';
 
+
 interface RecipeDialogProps {
   open: boolean;
   handleDialogClose: () => void;

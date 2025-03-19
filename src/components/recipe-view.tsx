@@ -26,7 +26,7 @@ const RecipeView = () => {
         <CardMedia
           component="img"
           height="250"
-          image={recipe.photoUrl || "./generic_food.jpg"}
+          image={recipe.photoUrl || "/generic_food.jpg"}
           alt={recipe.name}
         />
         <CardContent>
