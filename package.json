@@ -17,6 +17,7 @@
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
+    "blueimp-load-image": "^5.16.0",
     "i18next": "^24.2.2",
     "i18next-browser-languagedetector": "^8.0.4",
     "jwt-decode": "^4.0.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/blueimp-load-image": "^5.16.6",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",

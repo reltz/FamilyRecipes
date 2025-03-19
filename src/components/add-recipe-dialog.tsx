@@ -10,12 +10,15 @@ import { useState } from "react";
 import { getPreSignedURL, PhotoURLs, saveRecipe, uploadImageS3Bucket } from "../services/api-service";
 import { Log } from "../services/logging-service";
 import { useTranslation } from 'react-i18next';
+import loadImage from 'blueimp-load-image';
 
 interface RecipeDialogProps {
   open: boolean;
   handleDialogClose: () => void;
   onRecipeAdded: ()=> void;
 }
+
+const MAX_SIZE_IMAGE = 1024;
 
 function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialogProps) {
 
@@ -65,11 +68,40 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
 
       Log(`FileName: ${fileNameForUpload}`);
       urls = await getPreSignedURL(fileNameForUpload );
-      let successUpload;
-      if (urls.uploadUrl) {
-        //Upload photo to S3 using SDK here!!! TODO ROD
-        successUpload = await uploadImageS3Bucket(file, urls.uploadUrl);
+  
+      if(!urls.uploadUrl) {
+        alert("Upload da foto falhou, tente de novo ou salve a receita sem a foto!");
+        return;
       }
+
+      const successUpload = await new Promise<boolean>((resolve) => {
+        loadImage(
+          file,
+          function (canvasOrImg) {
+            if (canvasOrImg instanceof HTMLCanvasElement) {
+              canvasOrImg.toBlob(async function (blob) {
+                if (blob) {
+                  const fileFromBlob = new File([blob], file.name, { type: blob.type });
+                  const uploadSuccess = await uploadImageS3Bucket(fileFromBlob, urls.uploadUrl);
+                  resolve(uploadSuccess);
+                } else {
+                  Log('Failed to create blob from canvas', 'error');
+                  resolve(false);
+                }
+              }, file.type);
+            } else {
+              Log('Expected a canvas, but got an image element', 'error');
+              resolve(false);
+            }
+          },
+          {
+            maxWidth: MAX_SIZE_IMAGE,
+            maxHeight: MAX_SIZE_IMAGE,
+            canvas: true,
+          }
+        );
+      });
+  
       if(successUpload){
         photoUrl = urls.photoURL;
       }

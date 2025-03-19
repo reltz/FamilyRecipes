@@ -12,20 +12,23 @@ const RecipeView = () => {
 
   if (!recipe) {
     return <Typography variant="h6" color="error" sx={{ textAlign: "center", mt: 4 }}>
-     {t("no-recipes-found")}
+      {t("no-recipes-found")}
     </Typography>;
   }
 
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
       <Button variant="contained" color="primary" onClick={() => navigate(-1)} sx={{ mb: 2 }}>
-      {t("back")}
+        {t("back")}
       </Button>
 
       <Card>
-        {recipe.photoUrl && (
-          <CardMedia component="img" height="250" image={recipe.photoUrl} alt={recipe.name} />
-        )}
+        <CardMedia
+          component="img"
+          height="250"
+          image={recipe.photoUrl || "/generic_food.jpg"}
+          alt={recipe.name}
+        />
         <CardContent>
           <Typography variant="h4" gutterBottom>
             {recipe.name}
@@ -37,7 +40,7 @@ const RecipeView = () => {
           <Divider sx={{ my: 2 }} />
 
           <Typography variant="h6" gutterBottom>
-          {t("ingredients")}
+            {t("ingredients")}
           </Typography>
           <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
             {recipe.ingredients || "Not specified"}
@@ -46,7 +49,7 @@ const RecipeView = () => {
           <Divider sx={{ my: 2 }} />
 
           <Typography variant="h6" gutterBottom>
-          {t("preparation")}
+            {t("preparation")}
           </Typography>
           <Typography variant="body1" sx={{ whiteSpace: "pre-line" }}>
             {recipe.preparation}
