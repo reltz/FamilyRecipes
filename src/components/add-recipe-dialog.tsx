@@ -74,17 +74,21 @@ function AddRecipeDialog({ open, handleDialogClose }: RecipeDialogProps) {
       }
     }
 
-    try {
-      await saveRecipe({
-        name: recipeName,
-        preparation,
-        ingredients: ingredients,
-        photoUrl
-      });
-      Log(`Recipe saved successfully ${recipeName}`, 'info');
-    } catch (error) {
-      Log(`Error saving recipe: ${error}`, 'error');
-      throw error;
+    if(!file && !photoUrl || file && photoUrl){
+      try {
+        await saveRecipe({
+          name: recipeName,
+          preparation,
+          ingredients: ingredients,
+          photoUrl
+        });
+        Log(`Recipe saved successfully ${recipeName}`, 'info');
+      } catch (error) {
+        Log(`Error saving recipe: ${error}`, 'error');
+        throw error;
+      }
+    } else {
+      alert("Upload da foto falhou, tente de novo ou salve a receita sem a foto!");
     }
 
     handleDialogClose();

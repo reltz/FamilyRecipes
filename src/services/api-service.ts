@@ -53,7 +53,7 @@ export async function saveRecipe(params: CreateRecipeRequestInput): Promise<void
   }
 
   let response;
-
+ 
   if (useMockBe) {
     return;
 
@@ -104,7 +104,7 @@ export async function getPreSignedURL(fileNameForBucket: string): Promise<PhotoU
       photoURL,
       preSignedURL: respJson.uploadUrl,
     }
-    Log(`Urls: ${urls}`);
+    Log(`Urls: ${JSON.stringify(urls)}`);
     return urls;
   }
 }
