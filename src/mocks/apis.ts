@@ -181,7 +181,7 @@ export async function mockListRecipesAPI(): Promise<ListRecipesResponse> {
 }
 
 
-export async function mockSaveRecipeAPI(formData: FormData, token: string): Promise<{status: number}> {
+export async function mockSaveRecipeAPI(token: string): Promise<{status: number}> {
     const userInfo = verifyToken(token);
     console.log(`User info ${userInfo}`);
 
