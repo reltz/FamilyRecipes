@@ -13,11 +13,14 @@
   "load-more": "Carregar mais",
   "username": "Nome de usuário",
   "password": "Senha",
+  "confirm-password": "Confirmar senha",
   "recipe": "Receita",
   "back": "Voltar",
   "search-recipes": "Buscar receitas",
   "invalid-image-format": "Formato de imagem invalido, por favor use JPG ou PNG",
   "create-recipe-required": "Nome e preparação da receita devem ser preenchidos",
-  "failed-upload": "O upload da imagem falhou, tente de novo ou cria receita sem foto"
-
+  "failed-upload": "O upload da imagem falhou, tente de novo ou cria receita sem foto",
+  "change-password": "Alterar senha",
+  "user": "Usuário",
+  "no-match": "As senhas não coincidem"
 }

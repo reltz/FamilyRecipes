@@ -14,12 +14,15 @@ import { Log } from "./services/logging-service";
 const ITEMS_PER_PAGE = 9;
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(checkAuthStatus());
+
+  const authStatus = checkAuthStatus();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(authStatus.isAuth);
   const [loading, setLoading] = useState<boolean>(true);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [hasMore, setHasMore] = useState(false); // Track if there are more recipes to load
   const [cursor, setCursor] = useState<string | null>(null); // Store the cursor for pagination
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Increment to trigger refresh
+  const [user, setUser] = useState<string | null>(authStatus.username);
 
 
   const onRecipeAdded = () => {
@@ -73,20 +76,25 @@ function App() {
 
   // Initial recipe fetch when authenticated
   useEffect(() => {
+    Log("APP COMPONENT EFFECT!")
     const authStatus = checkAuthStatus();
-    setIsAuthenticated(authStatus);
   
-    if (authStatus) {
-      if (!hasMounted.current || refreshTrigger) { // Runs on first mount or refresh
+    if (authStatus.isAuth !== isAuthenticated) {
+      setIsAuthenticated(authStatus.isAuth);
+    }
+  
+    setUser(authStatus.username);
+  
+    if (authStatus.isAuth) {
+      if (!hasMounted.current || refreshTrigger) {
         hasMounted.current = true;
-        setLoading(true);  // Ensure loading is set before fetching
-        fetchRecipes().finally(() => setLoading(false)); // Ensure loading is turned off
+        setLoading(true);
+        fetchRecipes().finally(() => setLoading(false));
       }
     } else {
       setLoading(false);
     }
-  }, [refreshTrigger, isAuthenticated]); // Removed isAuthenticated as a dependency
-
+  }, [refreshTrigger, isAuthenticated]);
   
   // Handle loading next page
   const handleLoadMore = () => {
@@ -99,7 +107,7 @@ function App() {
 
   return (
     <>
-      <AppHeader handleLogout={handleLogout} isAuthenticated={isAuthenticated} onRecipeAdded={onRecipeAdded} />
+      <AppHeader handleLogout={handleLogout} user={user} isAuthenticated={isAuthenticated} onRecipeAdded={onRecipeAdded} />
       <Routes>
         {/* Public route */}
         <Route path="/login" element={<Login onLogin={handleLogin} />} />

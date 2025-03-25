@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { checkAuthStatus, login } from '../services/login-service';
 import { Box, Button, TextField } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { Log } from '../services/logging-service';
 
 interface LoginProps {
   onLogin: (status: boolean) => void;
@@ -18,7 +19,9 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
 
   useEffect(() => {
     // Check if the user is already authenticated
-    if (checkAuthStatus()) {
+    Log("LOGIN COMPONENT EFFECT!")
+    const authStatus = checkAuthStatus();
+    if (authStatus.isAuth) {
       navigate('/'); // Redirect to home page if already authenticated
     }
   }, [navigate]);

@@ -115,22 +115,35 @@ export function getToken(): {
   return defaultReturnValue;
 }
 
+export interface AuthStatus {
+  isAuth: boolean;
+  username: string | null;
+}
 
-export function checkAuthStatus(): boolean {
+export function checkAuthStatus(): AuthStatus {
   Log("Checking status!");
 
   const { decoded, token } = getToken();
 
   if (!token) {
     Log("No token found");
-    return false;
+    return {
+      isAuth: false,
+      username: null,
+    }
   }
 
   if (decoded) {
     Log("Token is valid and not expired");
-    return true;
+    return {
+      isAuth: true,
+      username: decoded.username,
+    }
   } else {
     Log("Token is invalid or expired");
-    return false;
+    return {
+      isAuth: false,
+      username: null,
+    };
   }
 }

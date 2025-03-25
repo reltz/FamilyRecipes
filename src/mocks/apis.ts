@@ -1,10 +1,7 @@
-// DELETE DEPENDENCIES AFTER SWAPPING FOR REAL APIS BACKEND
 
 import { LoginParams, LoginResponse } from "../services/login-service";
 import { ListRecipesResponse } from "../types/api";
 import { Recipe } from "../types/recipe";
-
-// const secret = "potato-123-secret";
 
 export function mockAuthApi(params: LoginParams): LoginResponse {
     const { username, password } = params;
@@ -29,8 +26,6 @@ function verifyToken(token: string) {
         return null;
     }
 }
-
-
 
 const cards: Recipe[] = [
     {
@@ -173,7 +168,6 @@ const cards: Recipe[] = [
 ];
 
 export async function mockListRecipesAPI(): Promise<ListRecipesResponse> {
-
     return Promise.resolve({
         recipes: cards,
         total: cards.length,
