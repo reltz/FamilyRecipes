@@ -9,7 +9,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { red } from "@mui/material/colors";
 import { Recipe } from "../types/recipe";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
