@@ -45,8 +45,7 @@ export async function login(params: LoginParams): Promise<boolean> {
       });
 
       if (response.status != 200) {
-        //  return Promise.reject(new Error('Not authorized'));
-        throw new Error(`not authorized, status: ${response.status}`);
+        return false;
       }
       isAuthorized = true;
       const data = await response.json(); // Parse JSON response
@@ -54,7 +53,7 @@ export async function login(params: LoginParams): Promise<boolean> {
       token = data.token; // Retrieve the token
     } catch (er) {
       Log(`Error with request: ${er}`, 'error');
-      throw er;
+      return false;
     }
   }
 
