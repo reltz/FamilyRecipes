@@ -35,6 +35,7 @@ function App() {
   const handleLogout = () => {
     setIsAuthenticated(false);
     clearLocalToken();
+    onRecipeAdded();
     navigate("/login");
   };
 
