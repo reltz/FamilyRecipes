@@ -36,7 +36,9 @@ const RecipeView = () => {
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             By {recipe.author}
           </Typography>
-
+      <Typography variant="subtitle2" color="text.secondary">
+        {new Date(recipe.createdAt).toLocaleDateString("pt-BR")}
+      </Typography>
           <Divider sx={{ my: 2 }} />
 
           <Typography variant="h6" gutterBottom>

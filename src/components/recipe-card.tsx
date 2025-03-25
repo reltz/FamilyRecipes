@@ -39,7 +39,7 @@ function RecipeCard(props: CardComponentProps) {
         //   </IconButton>
         // }
         title={recipe.name}
-        subheader={recipe.createdAt}
+        subheader={new Date(recipe.createdAt).toLocaleDateString("pt-BR")}
       />
       <CardMedia
         component="img"
