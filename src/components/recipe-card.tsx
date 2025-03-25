@@ -5,7 +5,9 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  Tooltip,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { red } from "@mui/material/colors";
 import { Recipe } from "../types/recipe";
@@ -25,19 +27,18 @@ function RecipeCard(props: CardComponentProps) {
     navigate(`/recipe`, { state: { recipe: recipe } });
   };
 
+  const theme = useTheme();
+  
   return (
     <Card sx={{ maxWidth: 345, marginTop: 2 }} onClick={handleClick}>
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label={t("recipe")}>
-            {recipe.author[0].toUpperCase()}
-          </Avatar>
+          <Tooltip title={recipe.author}>
+            <Avatar sx={{ bgcolor: theme.palette.primary.main }} aria-label={t("recipe")}>
+              {recipe.author[0].toUpperCase()}
+            </Avatar>
+          </Tooltip>
         }
-        // action={
-        //   <IconButton aria-label="settings">
-        //     <MoreVert />
-        //   </IconButton>
-        // }
         title={recipe.name}
         subheader={new Date(recipe.createdAt).toLocaleDateString("pt-BR")}
       />
