@@ -21,11 +21,19 @@ function App() {
   const [cursor, setCursor] = useState<string | null>(null); // Store the cursor for pagination
   const [refreshTrigger, setRefreshTrigger] = useState(0); // Increment to trigger refresh
 
+  const clearState = () => {
+    setRecipes([]);
+    setCursor(null);
+    setHasMore(false);
+    setLoading(true);
+    setRefreshTrigger(0);
+    setIsAuthenticated(false);
+  }
 
   const onRecipeAdded = () => {
     setRecipes([]);
-    setCursor(null); // Reset cursor for pagination
-    setHasMore(false); // Reset pagination state
+    setCursor(null);
+    setHasMore(false);
     setRefreshTrigger((prev) => prev + 1); // Trigger re-fetch without clearing UI immediately
   };
 
@@ -33,9 +41,9 @@ function App() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
+    clearState();
     clearLocalToken();
-    onRecipeAdded();
+  
     navigate("/login");
   };
 
