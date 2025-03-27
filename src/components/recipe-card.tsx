@@ -12,9 +12,11 @@ import {
 import { Recipe } from "../types/recipe";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Likes from "./likes";
 
 export interface CardComponentProps {
   cardData: Recipe;
+  username: string;
 }
 
 function RecipeCard(props: CardComponentProps) {
@@ -29,7 +31,7 @@ function RecipeCard(props: CardComponentProps) {
   const theme = useTheme();
   
   return (
-    <Card sx={{ maxWidth: 345, marginTop: 2 }} onClick={handleClick}>
+    <Card sx={{ maxWidth: 345, marginTop: 2 }}>
       <CardHeader
         avatar={
           <Tooltip title={recipe.author}>
@@ -40,14 +42,16 @@ function RecipeCard(props: CardComponentProps) {
         }
         title={recipe.name}
         subheader={new Date(recipe.createdAt).toLocaleDateString("pt-BR")}
+        action={<Likes likes={recipe.likes || {}} recipeId={recipe.id} username={props.username} />}
       />
       <CardMedia
         component="img"
         height="194"
         image={recipe.photoUrl || "./generic_food.jpg"}
         alt={recipe.name}
+        onClick={handleClick}
       />
-      <CardContent>
+      <CardContent onClick={handleClick}>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
           {recipe.preparation}
         </Typography>

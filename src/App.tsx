@@ -5,7 +5,7 @@ import AppHeader from "./components/app-header";
 import CardList from "./components/card-list";
 import Login from "./components/login";
 import PrivateRoute from "./components/private-route";
-import { checkAuthStatus, clearLocalToken } from "./services/login-service";
+import { checkAuthStatus, clearLocalToken, getUserName } from "./services/login-service";
 import { listRecipes } from "./services/api-service";
 import { Recipe } from "./types/recipe";
 import RecipeView from "./components/recipe-view";
@@ -15,6 +15,7 @@ const ITEMS_PER_PAGE = 9;
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(checkAuthStatus());
+  const [username, setUserName] = useState<string>(getUserName() || "");
   const [loading, setLoading] = useState<boolean>(true);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [hasMore, setHasMore] = useState(false); // Track if there are more recipes to load
@@ -88,6 +89,8 @@ function App() {
     if (authStatus) {
       if (!hasMounted.current || refreshTrigger) { // Runs on first mount or refresh
         hasMounted.current = true;
+        const username = getUserName();
+        setUserName(username || "");
         setLoading(true);  // Ensure loading is set before fetching
         fetchRecipes().finally(() => setLoading(false)); // Ensure loading is turned off
       }
@@ -124,6 +127,7 @@ function App() {
               handleLoadMore={handleLoadMore}
               hasMore={hasMore}
               loading={loading}
+              username={username}
             />
           }
         />
@@ -133,6 +137,7 @@ function App() {
             <PrivateRoute
               isAuthenticated={isAuthenticated}
               component={RecipeView}
+              username={username}
             />
           }
         />

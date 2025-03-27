@@ -10,14 +10,11 @@ interface CardListProps {
     handleLoadMore: () => void;
     hasMore: boolean;
     loading: boolean;
+    username: string;
 }
 
-function CardList({
-  recipes,
-  handleLoadMore,
-  hasMore,
-  loading
-}: CardListProps) {
+function CardList(props: CardListProps) {
+  const { recipes, handleLoadMore, hasMore, loading, username } = props;
   const [search, setSearch] = useState("");
   const { t } = useTranslation();
   Log(`list has more? ${hasMore}`)
@@ -43,7 +40,7 @@ function CardList({
       {/* Recipe List */}
       <Box sx={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 2 }}>
         {filteredRecipes.length > 0 ? (
-          filteredRecipes.map((recipe, index) => <RecipeCard key={index} cardData={recipe} />)
+          filteredRecipes.map((recipe, index) => <RecipeCard key={index} cardData={recipe} username={username} />)
         ) : (
           <p>{t("no-recipes-found")}</p>
         )}

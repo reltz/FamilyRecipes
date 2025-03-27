@@ -1,6 +1,14 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Recipe } from "../types/recipe";
-import { Box, Button, Card, CardContent, CardMedia, Typography, Divider } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Divider,
+} from "@mui/material";
 import { useTranslation } from "react-i18next";
 
 const RecipeView = () => {
@@ -11,14 +19,25 @@ const RecipeView = () => {
   const { t } = useTranslation();
 
   if (!recipe) {
-    return <Typography variant="h6" color="error" sx={{ textAlign: "center", mt: 4 }}>
-      {t("no-recipes-found")}
-    </Typography>;
+    return (
+      <Typography
+        variant="h6"
+        color="error"
+        sx={{ textAlign: "center", mt: 4 }}
+      >
+        {t("no-recipes-found")}
+      </Typography>
+    );
   }
 
   return (
     <Box sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
-      <Button variant="contained" color="primary" onClick={() => navigate(-1)} sx={{ mb: 2 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate(-1)}
+        sx={{ mb: 2 }}
+      >
         {t("back")}
       </Button>
 
@@ -36,9 +55,16 @@ const RecipeView = () => {
           <Typography variant="subtitle1" color="text.secondary" gutterBottom>
             By {recipe.author}
           </Typography>
-      <Typography variant="subtitle2" color="text.secondary">
-        {new Date(recipe.createdAt).toLocaleDateString("pt-BR")}
-      </Typography>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="subtitle2" color="text.secondary">
+              {new Date(recipe.createdAt).toLocaleDateString("pt-BR")}
+            </Typography>
+          </Box>
+
           <Divider sx={{ my: 2 }} />
 
           <Typography variant="h6" gutterBottom>

@@ -1,4 +1,4 @@
-const debugMode = false;
+import { debugMode } from "../flags";
 
 export function Log(message: string, level: "info" | "log" | "error" = "log"){
     if(debugMode){

@@ -1,7 +1,8 @@
 import { mockAuthApi } from "../mocks/apis";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { baseUrl, useMockBe as useMockBackend } from "./api-service";
+import { baseUrl } from "./api-service";
 import { Log } from "./logging-service";
+import { useMockBe } from "../flags";
 
 export interface LoginParams {
   username: string;
@@ -23,7 +24,7 @@ export async function login(params: LoginParams): Promise<boolean> {
   let isAuthorized = false;
   let token: string | null = null;
 
-  if (useMockBackend) {
+  if (useMockBe) {
     const response = await mockAuthApi(params);
     token = response.token;
     isAuthorized = response.isAuthorized;
@@ -49,7 +50,7 @@ export async function login(params: LoginParams): Promise<boolean> {
       }
       isAuthorized = true;
       const data = await response.json(); // Parse JSON response
-      console.log(`Data: ${JSON.stringify(data)}`)
+      Log(`Data: ${JSON.stringify(data)}`)
       token = data.token; // Retrieve the token
     } catch (er) {
       Log(`Error with request: ${er}`, 'error');
@@ -62,7 +63,7 @@ export async function login(params: LoginParams): Promise<boolean> {
   }
 
   if (token) {
-    console.log(`Will save token in LS!`);
+    Log(`Will save token in LS!`);
     localStorage.setItem(lsTokenKey, token); // Store status in sessionStorage
   }
   Log(`Token stored: ${!!token}, Authenticated: ${isAuthorized}`);
@@ -75,6 +76,16 @@ export function clearLocalToken(): void {
 
 export function getLocalToken(): string | null {
   return localStorage.getItem(lsTokenKey);
+}
+
+export function getUserName(): string | null {
+  const token = getLocalToken();
+  if (!token) {
+    return null;
+  } else {
+    const decoded = jwtDecode<CustomJWTPayload>(token);
+    return decoded.username;
+  }
 }
 
 export function getToken(): {

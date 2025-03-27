@@ -5,6 +5,7 @@ interface PrivateRouteProps {
   isAuthenticated: boolean;
   component: React.ComponentType<any>; // Allow any component
   handleLoadMore?: () => void;
+  username: string;
   hasMore?: boolean;
   recipes?: Recipe[];
   loading?: boolean;
@@ -16,7 +17,8 @@ const PrivateRoute = ({
   handleLoadMore,
   hasMore,
   recipes,
-  loading
+  loading,
+  username
 }: PrivateRouteProps) => {
   // If not authenticated, redirect to login page
   if (!isAuthenticated) {
@@ -30,6 +32,7 @@ const PrivateRoute = ({
       handleLoadMore={handleLoadMore}
       hasMore={hasMore}
       loading={loading}
+      username={username}
     />
   );
 };
