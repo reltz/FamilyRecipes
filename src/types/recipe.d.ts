@@ -8,6 +8,7 @@ export interface Recipe {
     createdAt: string;
     ingredients?: string;
     photoUrl?: string;
+    likes: Record<string, boolean>;
 }
 
 

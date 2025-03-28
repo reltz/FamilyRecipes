@@ -1,9 +1,10 @@
+import { useMockBe } from "../flags";
 import { mockListRecipesAPI } from "../mocks/apis";
 import { CreateRecipeRequestInput, ListRecipesResponse } from "../types/api";
 import { Log } from "./logging-service";
 import { getToken } from "./login-service";
 
-export const useMockBe = false;
+
 export const baseUrl = "https://94bpys6vk3.execute-api.ca-central-1.amazonaws.com/prod";
 
 export interface PhotoURLs {
@@ -71,6 +72,34 @@ export async function saveRecipe(params: CreateRecipeRequestInput): Promise<void
       Log("Created recipe!");
     }
   }
+}
+
+export async function likeRecipe(recipeId: string, action: "like" | "unlike"): Promise<boolean> {
+  const { decoded, token } = getToken();
+  if (!token || !decoded) {
+    Log(`Trying to like Recipe - not token present`);
+    return Promise.reject(Error("no token in the application"));
+  }
+
+  let response;
+  if (useMockBe) {
+    return true;
+  } else {
+    response = await fetch(`${baseUrl}/recipes/like-recipe?recipeId=${recipeId}&action=${action}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    if (response.status < 200 || response.status > 399) {
+      throw new Error(`Error with API: ${response.statusText}`);
+    } else {
+
+      Log("Like/unlike registered!");
+      return true;
+    }
+  }
+  
 }
 
 
