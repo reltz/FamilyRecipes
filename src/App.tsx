@@ -49,6 +49,7 @@ function App() {
 
   const handleLogin = (status: boolean) => {
     setIsAuthenticated(status);
+    setRefreshTrigger((prev) => prev + 1);
     navigate("/");
   };
 
@@ -93,7 +94,7 @@ function App() {
     } else {
       setLoading(false);
     }
-  }, [refreshTrigger, isAuthenticated]); // Removed isAuthenticated as a dependency
+  }, [refreshTrigger, isAuthenticated]); 
 
   
   // Handle loading next page
