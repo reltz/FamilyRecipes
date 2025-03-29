@@ -53,7 +53,9 @@ function RecipeCard(props: CardComponentProps) {
       />
       <CardContent onClick={handleClick}>
         <Typography variant="body2" sx={{ color: "text.secondary" }}>
-          {recipe.preparation}
+        {recipe.preparation.length > 150
+      ? `${recipe.preparation.substring(0, 150)}...`
+      : recipe.preparation}
         </Typography>
       </CardContent>
       <CardActions disableSpacing></CardActions>
