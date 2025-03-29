@@ -56,6 +56,8 @@ export async function saveRecipe(params: CreateRecipeRequestInput): Promise<void
   let response;
  
   if (useMockBe) {
+    // throw new Error("test");
+    setTimeout(() => {}, 500)
     return;
   } else {
     response = await fetch(`${baseUrl}/recipes/create`, {
