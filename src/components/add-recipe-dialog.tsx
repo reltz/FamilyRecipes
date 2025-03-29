@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getPreSignedURL, PhotoURLs, saveRecipe, uploadImageS3Bucket } from "../services/api-service";
 import { Log } from "../services/logging-service";
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import loadImage from 'blueimp-load-image';
 interface RecipeDialogProps {
   open: boolean;
   handleDialogClose: () => void;
-  onRecipeAdded: ()=> void;
+  onRecipeAdded: () => void;
 }
 
 const MAX_SIZE_IMAGE = 1024;
@@ -30,7 +30,10 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
   const [file, setFile] = useState<File | null>(null);
   const [fileName, setFileName] = useState("");
   const [validationError, setValidationError] = useState(false);
+  const [requestError, setRequestError] = useState(false);
   const [requiredFields, setRequiredFields] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   const handleCloseInternal = () => {
     setRecipeName("");
@@ -44,13 +47,25 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
     handleDialogClose();
   }
 
+  useEffect(() => {
+    if (open) {
+      setLoading(false);
+      setRequestError(false);
+      setFile(null);
+      setFileName("")
+    }
+  }, [open]);
 
   const handleSave = async () => {
-    // upload file first!!
+    if (loading) return;
+    setLoading(true);
+
+    Log("saving recipe");
     let photoUrl: string | undefined;
 
-    if(!recipeName || !preparation) {
+    if (!recipeName || !preparation) {
       setRequiredFields(true);
+      setLoading(false);
       return;
     } else {
       setRequiredFields(false);
@@ -61,16 +76,18 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
       const extension = fileName.split('.')[1];
       if (!['jpg', 'jpeg', 'png'].includes(extension)) {
         setValidationError(true);
+        setLoading(false);
       } else {
         setValidationError(false);
       }
       const fileNameForUpload = `${recipeName}.${extension}`;
 
       Log(`FileName: ${fileNameForUpload}`);
-      urls = await getPreSignedURL(fileNameForUpload );
-  
-      if(!urls.uploadUrl) {
+      urls = await getPreSignedURL(fileNameForUpload);
+
+      if (!urls.uploadUrl) {
         alert("Upload da foto falhou, tente de novo ou salve a receita sem a foto!");
+        setLoading(false);
         return;
       }
 
@@ -86,11 +103,13 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
                   resolve(uploadSuccess);
                 } else {
                   Log('Failed to create blob from canvas', 'error');
+                  setRequestError(true)
                   resolve(false);
                 }
               }, file.type);
             } else {
               Log('Expected a canvas, but got an image element', 'error');
+              setRequestError(true)
               resolve(false);
             }
           },
@@ -101,13 +120,13 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
           }
         );
       });
-  
-      if(successUpload){
+
+      if (successUpload) {
         photoUrl = urls.photoURL;
       }
     }
 
-    if(!file && !photoUrl || file && photoUrl){
+    if (!file && !photoUrl || file && photoUrl) {
       try {
         await saveRecipe({
           name: recipeName,
@@ -117,15 +136,16 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
         });
         Log(`Recipe saved successfully ${recipeName}`, 'info');
         onRecipeAdded();
+        handleDialogClose();
       } catch (error) {
         Log(`Error saving recipe: ${error}`, 'error');
+        setRequestError(true)
         throw error;
       }
     } else {
-      alert("Upload da foto falhou, tente de novo ou salve a receita sem a foto!");
+      setRequestError(true)
+      setLoading(false)
     }
-
-    handleDialogClose();
   };
 
   return (
@@ -170,20 +190,22 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
           {validationError && (
             <Typography sx={{ color: "red", fontSize: "14px", mt: 1 }}>{t('invalid-image-format')}</Typography>
           )}
+          {requestError && (
+            <Typography sx={{ color: "red", fontSize: "14px", mt: 1 }}>{t('request-error-save')}</Typography>
+          )}
           <label htmlFor="contained-button-file">
             <Button variant="outlined" component="span" fullWidth>
               {t('add-photo')}
             </Button>
             {fileName && <p>{t('selected-file')} {fileName}</p>}
           </label>
-
           {requiredFields && (
             <Typography sx={{ color: "red", fontSize: "14px", mt: 1 }}>{t('create-recipe-required')}</Typography>
           )}
           <Stack direction="row" spacing={2}>
             <Box flexGrow={1}>
-              <Button variant="contained" fullWidth onClick={handleSave}>
-                {t('save')}
+              <Button variant="contained" fullWidth onClick={handleSave} disabled={loading}>
+                {loading ? t('saving') : t('save')}
               </Button>
             </Box>
             <Box flexGrow={1}>
