@@ -5,11 +5,12 @@ import { HashRouter } from "react-router-dom";
 import Theme from "./Theme.tsx";
 import './i18n.ts'; // Import the i18n.ts file
 
+import { registerSW } from 'virtual:pwa-register'
+registerSW()
+
 createRoot(document.getElementById("root")!).render(
   // <StrictMode>
     <HashRouter>
-      {" "}
-      {/* Wrap your App with BrowserRouter */}
       <Theme>
         <App />
       </Theme>
