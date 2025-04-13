@@ -159,7 +159,7 @@ function AddRecipeDialog({ open, handleDialogClose, onRecipeAdded }: RecipeDialo
         </Typography>
 
         <Stack direction="column" spacing={2}>
-          <TextField label="Nome da Receita" required sx={{ margin: 2 }} value={recipeName} onChange={(e) => setRecipeName(e.target.value)} />
+          <TextField  label={t('recipe-name')}  required sx={{ margin: 2 }} value={recipeName} onChange={(e) => setRecipeName(e.target.value)} />
           <TextField
             label={t('ingredients')}
             sx={{ margin: 2 }}
